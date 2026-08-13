@@ -1,0 +1,381 @@
+<meta charset="utf-8">
+<title>Pretraining Coverage Beats Scale</title>
+<style>
+@font-face {
+  font-family: 'Faruma';
+  src: url(data:font/woff2;base64,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) format('woff2');
+  font-weight: 400;
+  font-display: swap;
+}
+:root {
+  --bg: #F9FAF8;
+  --surface: #FFFFFF;
+  --ink: #1C2426;
+  --ink-2: #526466;
+  --ink-3: #7C8B8C;
+  --accent: #0C7B70;
+  --accent-ink: #085E55;
+  --accent-wash: #0C7B7014;
+  --rule: #DFE6E3;
+  --rule-strong: #C3CFCA;
+  --code-bg: #EEF2F0;
+}
+:root:not([data-theme="light"]) { color-scheme: light dark; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #10181A;
+    --surface: #172225;
+    --ink: #E6ECEA;
+    --ink-2: #9FB0AF;
+    --ink-3: #71807F;
+    --accent: #45C4B3;
+    --accent-ink: #6ED4C6;
+    --accent-wash: #45C4B31A;
+    --rule: #24312F;
+    --rule-strong: #35454290;
+    --code-bg: #1C282B;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #10181A;
+  --surface: #172225;
+  --ink: #E6ECEA;
+  --ink-2: #9FB0AF;
+  --ink-3: #71807F;
+  --accent: #45C4B3;
+  --accent-ink: #6ED4C6;
+  --accent-wash: #45C4B31A;
+  --rule: #24312F;
+  --rule-strong: #35454290;
+  --code-bg: #1C282B;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Charter, 'Bitstream Charter', 'Source Serif 4', 'Iowan Old Style', Georgia, serif;
+  font-size: 1.0625rem;
+  line-height: 1.62;
+  margin: 0;
+  padding: 0 1.25rem;
+}
+.page { max-width: 44rem; margin: 0 auto; padding: 3.5rem 0 5rem; }
+.eyebrow {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: .72rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  margin: 0 0 1rem;
+}
+h1 {
+  font-size: 1.9rem;
+  line-height: 1.22;
+  margin: 0 0 1.1rem;
+  letter-spacing: -.012em;
+  text-wrap: balance;
+}
+.byline { color: var(--ink-2); font-size: .95rem; margin: 0 0 .3rem; }
+.byline a { color: var(--accent-ink); text-decoration: none; }
+.byline a:hover, .byline a:focus-visible { text-decoration: underline; }
+h2 {
+  font-size: 1.28rem;
+  margin: 2.6rem 0 .8rem;
+  letter-spacing: -.008em;
+  text-wrap: balance;
+}
+h2 .no { color: var(--ink-3); font-weight: 400; margin-right: .45em; }
+h3 { font-size: 1.05rem; margin: 1.8rem 0 .5rem; }
+p { margin: 0 0 1rem; }
+a { color: var(--accent-ink); }
+strong { font-weight: 700; }
+.abstract {
+  border-top: 2px solid var(--ink);
+  border-bottom: 1px solid var(--rule-strong);
+  padding: 1.3rem 0 1.1rem;
+  margin: 2rem 0 1rem;
+}
+.abstract h2 { margin: 0 0 .6rem; font-size: 1rem; }
+.abstract p { font-size: 1rem; color: var(--ink-2); margin-bottom: .6rem; }
+.abstract p:last-child { margin-bottom: 0; }
+
+code, .mono {
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: .86em;
+  background: var(--code-bg);
+  padding: .08em .35em;
+  border-radius: 4px;
+}
+pre {
+  background: var(--code-bg);
+  border-radius: 8px;
+  padding: .9rem 1.1rem;
+  overflow-x: auto;
+  font-size: .84rem;
+  line-height: 1.55;
+}
+pre code { background: none; padding: 0; }
+
+.dv {
+  font-family: 'Faruma', 'MV Boli', sans-serif;
+  direction: rtl;
+  unicode-bidi: isolate;
+  font-size: 1.12em;
+  line-height: 1.9;
+}
+
+.tablewrap { overflow-x: auto; margin: 1.4rem 0; }
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: .92rem;
+  font-variant-numeric: tabular-nums;
+}
+caption {
+  caption-side: bottom;
+  text-align: left;
+  font-size: .84rem;
+  color: var(--ink-2);
+  padding-top: .6rem;
+  line-height: 1.5;
+}
+th {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: .78rem;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  font-weight: 600;
+  text-align: left;
+  padding: .45rem .8rem .45rem 0;
+  border-bottom: 1.5px solid var(--rule-strong);
+}
+td { padding: .42rem .8rem .42rem 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th.num, td.num { text-align: right; padding-right: 0; padding-left: .8rem; }
+tr.ours td { background: var(--accent-wash); font-weight: 700; }
+tr.section td {
+  font-style: italic;
+  color: var(--ink-2);
+  border-bottom: none;
+  padding-top: .9rem;
+  background: none;
+  font-weight: 400;
+}
+td .q { color: var(--ink-3); font-size: .85em; }
+
+.figure { margin: 1.8rem 0; }
+.figure svg { width: 100%; height: auto; display: block; }
+.figcap { font-size: .84rem; color: var(--ink-2); margin-top: .5rem; line-height: 1.5; }
+.chart-axis { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 10.5px; fill: var(--ink-3); }
+.chart-label { font-family: 'Segoe UI', system-ui, sans-serif; font-size: 11px; fill: var(--ink-2); }
+.chart-label.em { fill: var(--accent-ink); font-weight: 600; }
+.gridline { stroke: var(--rule); stroke-width: 1; }
+.chart-tip {
+  position: absolute;
+  pointer-events: none;
+  background: var(--surface);
+  border: 1px solid var(--rule-strong);
+  border-radius: 6px;
+  padding: .25rem .55rem;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  font-size: .78rem;
+  color: var(--ink);
+  box-shadow: 0 2px 8px #0002;
+  opacity: 0;
+  transition: opacity .12s;
+  white-space: nowrap;
+}
+@media (prefers-reduced-motion: reduce) { .chart-tip { transition: none; } }
+
+.examples { font-size: .95rem; }
+.examples .en { color: var(--ink-2); font-size: .9rem; }
+.footer {
+  margin-top: 3.5rem;
+  border-top: 1px solid var(--rule-strong);
+  padding-top: 1.2rem;
+  font-size: .88rem;
+  color: var(--ink-2);
+}
+.refs { font-size: .88rem; color: var(--ink-2); }
+.refs li { margin-bottom: .45rem; }
+ol, ul { padding-left: 1.3rem; }
+li { margin-bottom: .35rem; }
+</style>
+
+<div class="page">
+<p class="eyebrow">Research note · Machine translation · August 2026</p>
+<h1>Pretraining Coverage Beats Scale</h1>
+<p class="byline">A strong English–Dhivehi model and benchmark · LoRA fine-tuning of MADLAD-400 with keymap round-trip validation</p>
+<p class="byline">by <a href="https://github.com/streetsolider">streetsolider</a> · code: <a class="mono" href="https://github.com/streetsolider/div-translation">div-translation</a> · model: <a class="mono" href="https://huggingface.co/str33t/madlad400-3b-mt-en-dv-news-v1">str33t/madlad400-3b-mt-en-dv-news-v1</a> · keymap: <a href="https://github.com/streetsolider/div-transliteration">div-transliteration</a></p>
+
+<div class="abstract">
+<h2>Abstract</h2>
+<p>Dhivehi is the national language of the Maldives. It is spoken by nearly half a million people (<a href="https://www.ethnologue.com/language/div/">Ethnologue, 28th ed.</a>; <a href="https://census.gov.mv/2022/">Census 2022</a>) and is written in Thaana, a right-to-left script that no other language uses. Despite this, none of the major open translation models support it: NLLB-200 does not include it, FLORES-200 has no Dhivehi data, and Google's recent TranslateGemma models do not list it among their benchmarked languages either. This note describes how we trained a usable English→Dhivehi translation model with modest compute.</p>
+<p>We started from MADLAD-400 3B-MT, a T5-style encoder–decoder pretrained for translation across more than 450 languages, whose 256k-token vocabulary and pretraining corpus both cover Thaana; we confirmed the fit by measuring how efficiently different models' tokenizers encode Thaana text, then fine-tuned it with LoRA on about 93,000 cleaned news-domain sentence pairs (roughly 10 GPU-hours). On a frozen test set of 1,500 sentence pairs, the chrF++ score improved from 42.6 (the model as downloaded) to <strong>61.8</strong>, and every output passed an automatic script-validity check that round-trips the text through the Segha keymap, a one-to-one mapping between Thaana characters and ASCII. Larger open models used out of the box (a quantized MADLAD 7B and the instruction-tuned LLMs TranslateGemma 12B, Gemma 4 12B and Qwen3 14B) all scored well below the fine-tuned 3B model, and so did the earlier community fine-tunes for this direction; the strongest of those, an mT5-large trained on synthetic targets, trails it by 6 chrF++ on the same benchmark.</p>
+</div>
+
+<h2><span class="no">1</span>The gap</h2>
+<p>Machine translation now covers hundreds of languages, but the coverage is uneven, and Dhivehi (ISO 639-1 <code>dv</code>) is a clear example of a language that has been left out. It is written in Thaana, a right-to-left script used by no other language, and because the speaker population is small, most large multilingual projects simply skip it. NLLB-200 covers 202 languages, and Dhivehi is not one of them; its companion benchmark FLORES-200 therefore has no Dhivehi portion. TranslateGemma, Google's 2026 family of open translation models, reports results for 55 languages on WMT24++, and Dhivehi is again absent. (Google Translate does support Dhivehi, but it is a closed commercial service, not something a researcher can inspect, run locally, or build on.) As far as we could find, there is no public benchmark for Dhivehi and no open translation model whose pretraining actually covered the language; what does exist publicly for English→Dhivehi is a handful of community fine-tunes, and we evaluate all of them on our benchmark in §6.</p>
+<p>The question this note tries to answer is a practical one: how far can careful base-model selection and parameter-efficient fine-tuning close that gap? We document everything needed to reproduce the answer: how we picked the base model by measuring tokenizer fertility, the cleaned corpus and frozen benchmark built from permissively licensed public data, the LoRA recipe, a script-validity check built from a transliteration keymap, and a weight-loading pitfall that silently breaks MADLAD in current <code>transformers</code>.</p>
+
+<h2><span class="no">2</span>The Segha keymap as a validity check</h2>
+<p>The <a href="https://github.com/streetsolider/div-transliteration">Segha keymap</a> maps each Thaana codepoint to a single printable ASCII character and back. It was originally built for keyboard input and transliteration, but the fact that the mapping is one-to-one gives it a second use. For any string that consists only of valid Thaana characters, common punctuation, digits, and whitespace, mapping to Latin and back returns the string unchanged. If the string contains anything else (mojibake, a stray Latin fragment, or an invalid codepoint), the round trip does not reproduce the input, and the error is caught automatically. We report the <em>round-trip pass rate</em>, the fraction of model outputs that survive this round trip unchanged, as a script-validity metric alongside the translation quality metrics. It is cheap and deterministic, and it catches a failure mode (mixing scripts) that chrF++ only penalizes weakly. The same module also supplies the punctuation normalization used during data preparation (ASCII <code>,;?</code> → Arabic <span class="dv">،؛؟</span>).</p>
+
+<h2><span class="no">3</span>Choosing a base model with tokenizer fertility</h2>
+<p>A model is unlikely to translate well into a script that its tokenizer can only represent as individual bytes. To check this before training anything, we measured fertility (subword tokens per whitespace-separated word) on the 13,763 Dhivehi words in the frozen test set:</p>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Tokenizer</th><th class="num">tok/word</th><th class="num">vs MADLAD</th></tr></thead>
+<tbody>
+<tr><td>NLLB-200</td><td class="num">2.78</td><td class="num">0.96×</td></tr>
+<tr class="ours"><td>MADLAD-400</td><td class="num">2.89</td><td class="num">1.00×</td></tr>
+<tr><td>Gemma-3</td><td class="num">5.93</td><td class="num">2.05×</td></tr>
+<tr><td>Qwen3</td><td class="num">16.05</td><td class="num">5.55×</td></tr>
+<tr><td>BLOOM</td><td class="num">16.26</td><td class="num">5.63×</td></tr>
+<tr><td>OLMo-2</td><td class="num">17.15</td><td class="num">5.93×</td></tr>
+</tbody>
+<caption>Table 1 — Subword fertility on the Thaana side of the test set. MADLAD's 256k SentencePiece vocabulary contains whole Thaana words, while most recent LLM tokenizers fall back to bytes. NLLB's tokenizer handles Thaana well, but the model itself was never trained on Dhivehi; tokenizer coverage alone is not enough.</caption>
+</table>
+</div>
+<p>MADLAD-400 and NLLB-200 tokenize Thaana compactly, while the general-purpose LLMs need 5–6× more tokens for the same text. That overhead hurts twice: the training targets become much longer, which spreads the learning signal thinner, and inference gets proportionally more expensive. Tokenizer coverage then combines with training-data coverage: MADLAD-400 is the only model in the table that actually saw Dhivehi during pretraining (about 3.5M clean sentences). This pointed clearly at <code>madlad400-3b-mt</code>, a 3B-parameter T5-style encoder–decoder with a 256k SentencePiece vocabulary, trained for translation across more than 450 languages, which selects its target language with a task prefix (<code>&lt;2dv&gt; {English text}</code>). The encoder–decoder architecture also suits the task: the whole English sentence is encoded bidirectionally before any Thaana is generated, unlike in a decoder-only LLM. We picked the 3B size rather than 7B or 10B because it is the largest that still allows unquantized bf16 LoRA training within 16 GB.</p>
+
+<h2><span class="no">4</span>Data</h2>
+<p><strong>Sources.</strong> For this first round we used only the cleanest permissively licensed public data: <a href="https://huggingface.co/datasets/alakxender/dhivehi-english-translations">dhivehi-english-translations</a> (82,583 news-domain sentence pairs with topic labels, MIT license) and the GATITOS en–dv data (3,973 professionally translated words and phrases, CC-BY-4.0), which we upsampled 3× so the model gets repeated exposure to reliable terminology. We deliberately left out the larger but noisier options (a 484k mixed-granularity crawl and synthetic distillation sets); the synthetic sets in particular could contaminate any test set built from public news text.</p>
+<p><strong>Cleaning.</strong> Dhivehi text is normalized to Unicode NFC, and ASCII punctuation is mapped to its Arabic equivalents using the keymap module's rules. Pairs are dropped unless the target side is at least 70% Thaana characters, and pairs with a source/target length ratio outside [0.25, 4.0] are filtered out.</p>
+<p><strong>Splits.</strong> From the source dataset's held-out test partition we froze two sets: <em>devtest</em> (1,500 pairs, topic-stratified, used only for final reporting) and <em>dev</em> (1,000 pairs, used for checkpoint selection). The training data was deduplicated against both splits on both language sides, leaving <strong>93,258</strong> training pairs.</p>
+
+<h2><span class="no">5</span>Fine-tuning</h2>
+<p>We trained LoRA adapters (r=32, α=64, dropout 0.05) on all attention projections and feed-forward matrices of the encoder, decoder, and cross-attention (94.4M trainable parameters, or 3.1% of the model) in bf16, with gradient checkpointing and the 8-bit AdamW optimizer. The effective batch size is 64, the learning rate 10⁻⁴ with cosine decay, and training ran for 3 epochs (4,374 steps), about 10.3 hours end-to-end on our single 16 GB GPU. Every 400 steps we decoded a fixed 500-sample subset of the dev set greedily and kept the checkpoint with the best dev chrF++:</p>
+
+<div class="figure" style="position:relative">
+<svg viewBox="0 0 640 300" role="img" aria-label="Line chart of development chrF plus plus during fine-tuning, rising from 53.6 at step 400 to a best of 61.45 at step 4000, far above the base model's 42.59.">
+  <g class="gridlines">
+    <line class="gridline" x1="44" y1="212.3" x2="624" y2="212.3"/>
+    <line class="gridline" x1="44" y1="160.7" x2="624" y2="160.7"/>
+    <line class="gridline" x1="44" y1="109.0" x2="624" y2="109.0"/>
+    <line class="gridline" x1="44" y1="57.3" x2="624" y2="57.3"/>
+  </g>
+  <text class="chart-axis" x="38" y="215.8" text-anchor="end">45</text>
+  <text class="chart-axis" x="38" y="164.2" text-anchor="end">50</text>
+  <text class="chart-axis" x="38" y="112.5" text-anchor="end">55</text>
+  <text class="chart-axis" x="38" y="60.8" text-anchor="end">60</text>
+  <text class="chart-axis" x="44" y="280" text-anchor="middle">0</text>
+  <text class="chart-axis" x="172.9" y="280" text-anchor="middle">1000</text>
+  <text class="chart-axis" x="301.8" y="280" text-anchor="middle">2000</text>
+  <text class="chart-axis" x="430.7" y="280" text-anchor="middle">3000</text>
+  <text class="chart-axis" x="559.6" y="280" text-anchor="middle">4000</text>
+  <text class="chart-axis" x="334" y="297" text-anchor="middle">training step</text>
+  <line x1="44" y1="237.2" x2="624" y2="237.2" stroke="var(--ink-3)" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text class="chart-label" x="620" y="232" text-anchor="end">base model, devtest chrF++ 42.59</text>
+  <polyline fill="none" stroke="var(--accent)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"
+    points="95.6,123.9 147.1,86.9 198.7,74.0 250.2,65.5 301.8,58.6 353.3,50.9 404.9,50.3 456.4,46.5 508.0,45.3 559.6,42.3 607.8,43.4"/>
+  <g id="pts" fill="var(--accent)">
+    <circle cx="95.6" cy="123.9" r="3.5" data-s="400" data-v="53.56"/>
+    <circle cx="147.1" cy="86.9" r="3.5" data-s="800" data-v="57.14"/>
+    <circle cx="198.7" cy="74.0" r="3.5" data-s="1200" data-v="58.39"/>
+    <circle cx="250.2" cy="65.5" r="3.5" data-s="1600" data-v="59.21"/>
+    <circle cx="301.8" cy="58.6" r="3.5" data-s="2000" data-v="59.88"/>
+    <circle cx="353.3" cy="50.9" r="3.5" data-s="2400" data-v="60.62"/>
+    <circle cx="404.9" cy="50.3" r="3.5" data-s="2800" data-v="60.68"/>
+    <circle cx="456.4" cy="46.5" r="3.5" data-s="3200" data-v="61.05"/>
+    <circle cx="508.0" cy="45.3" r="3.5" data-s="3600" data-v="61.16"/>
+    <circle cx="559.6" cy="42.3" r="5" stroke="var(--bg)" stroke-width="2" data-s="4000" data-v="61.45 — best, kept"/>
+    <circle cx="607.8" cy="43.4" r="3.5" data-s="4374" data-v="61.35"/>
+  </g>
+  <text class="chart-label em" x="552" y="30" text-anchor="end">best: 61.45 @ step 4,000</text>
+</svg>
+<div class="chart-tip" id="tip"></div>
+<p class="figcap">Figure 1 — Development chrF++ (greedy decoding, 500-sample subset) during fine-tuning. The step-4,000 checkpoint is used for all reported results. Dashed line: the out-of-the-box base model on the full devtest.</p>
+</div>
+
+<h2><span class="no">6</span>Results</h2>
+<p>All systems are scored with sacreBLEU. The headline metric is <strong>chrF++</strong> (word order 2), a character-level F-score that suits a morphologically rich language like Dhivehi better than word-level BLEU. We also report character-level BLEU and the keymap round-trip pass rate. The MADLAD-family systems decode with beam 4. The instruction-tuned LLMs run zero-shot at temperature 0; because running them is slow, they are scored on a fixed random 400-pair subset of devtest (seed 13), and the fine-tuned model and base 3B are re-scored on that identical subset so the comparison is like-for-like.</p>
+
+<div class="tablewrap">
+<table>
+<thead><tr><th>System</th><th class="num">chrF++</th><th class="num">char-BLEU</th><th class="num">Round-trip</th></tr></thead>
+<tbody>
+<tr class="section"><td colspan="4">Full devtest (1,500 pairs), beam 4</td></tr>
+<tr><td>madlad400-3b-mt <span class="q">(base)</span></td><td class="num">42.59</td><td class="num">48.36</td><td class="num">94.6%</td></tr>
+<tr><td>madlad400-7b-mt-bt <span class="q">(NF4)</span></td><td class="num" id="r7-chrf">17.83†</td><td class="num" id="r7-bleu">8.78</td><td class="num" id="r7-rt">80.3%</td></tr>
+<tr><td>Flan-T5 en2dv 250M <span class="q">(alakxender)</span></td><td class="num">24.90</td><td class="num">11.09</td><td class="num">53.8%</td></tr>
+<tr><td>Neobe ByT5-large 1.2B <span class="q">(synthetic targets)</span></td><td class="num">49.61</td><td class="num">60.07</td><td class="num">100%</td></tr>
+<tr><td>Neobe mT5-large 1.2B <span class="q">(synthetic targets)</span></td><td class="num">55.75</td><td class="num">67.15</td><td class="num">100%</td></tr>
+<tr class="ours"><td>3B + LoRA (ours)</td><td class="num">61.82</td><td class="num">72.21</td><td class="num">100%</td></tr>
+<tr class="section"><td colspan="4">400-pair subset, zero-shot instruction LLMs</td></tr>
+<tr><td>TranslateGemma 12B <span class="q">(q4)</span></td><td class="num">33.18</td><td class="num">40.83</td><td class="num">96.3%</td></tr>
+<tr><td>Gemma 4 12B <span class="q">(qat)</span></td><td class="num" id="g4-chrf">23.22</td><td class="num" id="g4-bleu">25.52</td><td class="num" id="g4-rt">48.3%</td></tr>
+<tr><td>Qwen3 14B <span class="q">(q4)</span></td><td class="num" id="q3-chrf">3.89</td><td class="num" id="q3-bleu">1.35</td><td class="num" id="q3-rt">92.3%</td></tr>
+<tr><td>madlad400-3b-mt <span class="q">(base)</span></td><td class="num">42.19</td><td class="num">47.49</td><td class="num">93.3%</td></tr>
+<tr class="ours"><td>3B + LoRA (ours)</td><td class="num">62.77</td><td class="num">73.16</td><td class="num">100%</td></tr>
+<tr class="section"><td colspan="4">Not runnable</td></tr>
+<tr><td>NLLB-200</td><td colspan="3"><em>no Dhivehi support</em></td></tr>
+</tbody>
+<caption>Table 2 — English→Dhivehi results. Round-trip = Segha keymap round-trip pass rate. Quantization in parentheses. †Falls into repetition loops on about half of the inputs under NF4; the paragraphs below break this down.</caption>
+</table>
+</div>
+
+<p>Fine-tuning improves the 3B model by <strong>+19.2 chrF++</strong> (42.6 → 61.8) and +23.9 character BLEU, and closes the script-validity gap (94.6% → 100%). The base model occasionally emits stray Latin characters or malformed sequences; on this test set, the fine-tuned model never does.</p>
+<p>The instruction-LLM rows show two different ways a model can fail. Gemma 4 produces non-Thaana content in about half of its outputs (48.3% round-trip). Qwen3 is almost the opposite: its round-trip rate is high (92.3%) but its chrF++ is close to zero, because it tends to fall into repetition loops of valid Thaana words (<span class="dv">މައްނަ މައްނަ މައްނަ</span> …), and sometimes answers in the wrong script altogether (Sinhala or Arabic). In other words, script validity is necessary but not sufficient; the round-trip metric is meant to complement the quality metrics, not replace them. TranslateGemma, the strongest of the LLM rows and a dedicated open translation model, produces mostly valid Thaana but still scores <em>below the untuned MADLAD 3B baseline</em>, which is consistent with Dhivehi being outside its supported language set. It is worth remembering that these comparisons favour our model: it was fine-tuned on the same news domain the test set comes from, while the LLMs see it cold.</p>
+<p>The quantized 7B row needs some unpacking. Under NF4, <code>madlad400-7b-mt-bt</code> falls into repetition loops on roughly half the test set (32% of its outputs contain no Thaana at all, and its average output is four times as long as the reference), which collapses its corpus-level score. On the 764 sentences where it decodes cleanly, it scores <strong>49.0 chrF++</strong> against 40.7 for the 3B base model on the same subset: the larger model really is stronger when it stays stable. Quantization noise alone does not explain the failures: under identical NF4 settings the 3B model loses only 0.3 chrF++ (48.5 vs 48.8 on a 150-sentence diagnostic), so the instability seems specific to this checkpoint under 4-bit quantization. Evaluating the 7B at full precision was outside our memory budget. The practical conclusion is unchanged: the fine-tuned 3B beats every alternative we could run.</p>
+<p><strong>Earlier en→dv fine-tunes.</strong> The multi-task Flan-T5 (250M, alakxender), evaluated with its author's recommended decoding settings, reaches 24.9 chrF++ with 53.8% round-trip validity. Neobe's dedicated models are far stronger: on our benchmark their mT5-large sentence model reaches <strong>55.75 chrF++</strong> and the ByT5-large version 49.61, both with a perfect keymap round trip. Dedicated fine-tunes clearly get script validity right, and the mT5 is serious prior art. Our model is still ahead by <strong>+6.1 chrF++</strong>, while training 13× fewer parameters (a 94M LoRA against a full 1.2B fine-tune) on human-aligned rather than synthetic targets. The margin is probably conservative, because Neobe's synthetic training pipeline draws on the same news domain as the test set. Overall, the pattern across Table 2 supports the premise of this note: starting from a model whose pretraining covers the language beats both raw scale (the quantized 7B and the 12–14B LLMs) and task-only fine-tuning. None of the earlier systems report results on a shared public benchmark; this work closes that gap. (NLLB-based Dhivehi fine-tunes also exist, but they target romanized Dhivehi, not Thaana.)</p>
+
+<h3>Examples</h3>
+<div class="tablewrap examples">
+<table>
+<thead><tr><th>English</th><th>Reference</th><th>Model output</th></tr></thead>
+<tbody>
+<tr>
+  <td class="en">Maldivian introduces premium economy tickets for domestic flights</td>
+  <td><span class="dv">މޯލްޑިވިއަން އިން އެތެރޭގެ އުދުހުންތަކަށް ޕްރިމިއަމް އިކޮނޮމީ ޓިކެޓް ތައާރަފުކުރަނީ</span></td>
+  <td><span class="dv">މޯލްޑިވިއަންގެ އެތެރޭގެ ދަތުރުތަކަށް ޕްރިމިއަމް އިކޮނޮމިކް ޓިކެޓް ތައާރަފްކޮށްފި</span></td>
+</tr>
+<tr>
+  <td class="en">Budget revised and increased to 17.95 billion rufiyaa</td>
+  <td><span class="dv">ބަޖެޓް ރިވައިސްކޮށް، 17.95 ބިލިއަން ރުފިޔާ އަށް ބޮޑުކޮށްފި</span></td>
+  <td><span class="dv">ބަޖެޓް އިސްލާހުކޮށް 17.95 ބިލިއަން ރުފިޔާއަށް ބޮޑުކޮށްފި</span></td>
+</tr>
+<tr>
+  <td class="en">President's Office International Media Consultant Paul Roberts converts to Islam and marries Maldivian</td>
+  <td><span class="dv">ރައީސް އޮފީހުގެ އިންޓަނޭޝަނަލް މީޑިއާ ކޮންސަލްޓަންޓް ޕޯލް ރޮބަޓްސް އިސްލާމްވެ ދިވެއްސަކާ ކައިވެނި ބައްލަވައިގެންފި</span></td>
+  <td><span class="dv">ރައީސް އޮފީހުގެ އިންޓަނޭޝަނަލް މީޑިއާ ކޮންސަލްޓަންޓް ޕޮލް ރޮބަޓްސް އިސްލާމްވެ ދިވެއްސަކާ ކައިވެނިކޮށްފި</span></td>
+</tr>
+</tbody>
+<caption>Table 3 — Test-set examples (fine-tuned model, beam 4). The outputs read as fluent news-register Dhivehi. In row 2 the model prefers the native word for "amended" where the reference uses an English loanword, a defensible choice that chrF++ nevertheless counts as an error. In row 3 the model's plain-register "married" misses the reference's honorific form.</caption>
+</table>
+</div>
+<p>The remaining failure modes we observed are named-entity slips (one headline rendered <em>Urdu</em> with a form resembling "Erdoğan") and occasionally dropping honorific verb morphology.</p>
+
+<h2><span class="no">7</span>Limitations</h2>
+<p><strong>In-domain evaluation:</strong> the training and test data come from the same news distribution (though strictly deduplicated), so scores on conversational or technical text will be lower. <strong>Single run:</strong> all numbers come from one training run with one seed; we report no variance estimates. <strong>Reference noise:</strong> the test references are auto-aligned public data and contain occasional noise; we found duplicated-sentence references where the model output was actually cleaner than the reference. If anything, then, the true quality is slightly under-measured. <strong>Quantized comparisons:</strong> the 7B and LLM rows run in 4-bit, so each slightly underestimates its full-precision counterpart; the observed gaps, however, are far larger than typical quantization losses. <strong>No human evaluation yet.</strong> Automatic metrics on a language with nearly half a million speakers deserve validation by native speakers, and we consider that the most important next step.</p>
+
+<h2><span class="no">8</span>Reproducibility note: MADLAD breaks under transformers 5.x</h2>
+<p>MADLAD checkpoints store the true shared embedding under <code>decoder.embed_tokens.weight</code> and a <em>separate</em> output projection under <code>lm_head.weight</code>, while their config declares <code>tie_word_embeddings=true</code>. Some <code>transformers</code> 5.x versions resolve this contradiction by tying all three matrices to the <code>lm_head</code> tensor, silently replacing the encoder/decoder embeddings and reducing generation to garbage. Our loader detects the bad tie and rewires both tensors from the checkpoint file (handling sharded and quantized loads). Without this fix, the baseline numbers above are not reproducible.</p>
+
+<h2><span class="no">9</span>Conclusion</h2>
+<p>A carefully chosen pretrained translation model, about 93k cleaned public sentence pairs, and 10 GPU-hours of LoRA training were enough to build what is, as far as we can tell, the strongest open English→Dhivehi system available, ahead of much larger general and even translation-specialized open models, none of which cover Dhivehi. The overall recipe (screening base models by tokenizer fertility, starting from the cleanest data first, freezing a benchmark before training, and validating output script with a keymap round trip) should transfer to other excluded languages with unusual scripts. Next: a second training round with the 484k-pair volume corpus, back-translation from 4.6M monolingual Dhivehi sentences, 7B-scale QLoRA, and native-speaker evaluation.</p>
+
+<div class="footer">
+<p>LLM evaluation prompt (zero-shot, temperature 0): <em>"Translate the following English sentence into Dhivehi (the language of the Maldives, written in Thaana script). Reply with ONLY the Dhivehi translation - no explanation, no romanization, no quotes."</em> Responses cleaned deterministically; empty responses count against the model.</p>
+<p>Key references: MADLAD-400 (Kudugunta et al., NeurIPS 2023) · LoRA (Hu et al., ICLR 2022) · chrF++ (Popović, WMT 2017) · sacreBLEU (Post, WMT 2018) · NLLB (2022) · GATITOS (Jones et al., EMNLP 2023) · TranslateGemma (2026) · Ethnologue 28th ed. (SIL, 2025) · Maldives Population &amp; Housing Census 2022. Full BibTeX in the repository's <span class="mono">paper/references.bib</span>.</p>
+<p>Thaana text set in Faruma (embedded).</p>
+</div>
+</div>
+
+<script>
+(function () {
+  var tip = document.getElementById('tip');
+  var fig = tip.parentElement;
+  document.querySelectorAll('#pts circle').forEach(function (c) {
+    c.addEventListener('mouseenter', function () {
+      tip.textContent = 'step ' + c.dataset.s + ' · dev chrF++ ' + c.dataset.v;
+      var fr = fig.getBoundingClientRect(), cr = c.getBoundingClientRect();
+      tip.style.left = (cr.left - fr.left + 10) + 'px';
+      tip.style.top = (cr.top - fr.top - 34) + 'px';
+      tip.style.opacity = 1;
+    });
+    c.addEventListener('mouseleave', function () { tip.style.opacity = 0; });
+  });
+})();
+</script>

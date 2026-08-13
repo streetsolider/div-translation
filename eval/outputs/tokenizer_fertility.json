@@ -1,0 +1,12 @@
+{
+  "n_sentences": 1500,
+  "n_words": 13763,
+  "fertility": {
+    "madlad400-3b-mt": 2.89,
+    "gemma-3": 5.93,
+    "Qwen3-8B": 16.05,
+    "OLMo-2-7B": 17.15,
+    "bloom": 16.26,
+    "nllb-200": 2.78
+  }
+}
