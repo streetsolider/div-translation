@@ -7,7 +7,7 @@ lm_head.weight — but their config says tie_word_embeddings=True. Transformers
 lm_head tensor, which breaks generation entirely (transformers 4.x happened
 to wire it correctly). load_madlad() detects the bad tie and rewires from
 the checkpoint file. Handles single-file and sharded checkpoints, and
-optional NF4 quantization for the 7B/10B models (quant="nf4").
+optional bitsandbytes quantization (quant="nf4"/"fp4"/"int8").
 """
 
 import json
@@ -19,6 +19,9 @@ from safetensors import safe_open
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 BASE_CHECKPOINT = "google/madlad400-3b-mt"
+
+# bitsandbytes weight formats: 4-bit NF4/FP4 and 8-bit LLM.int8()
+QUANT_MODES = ("nf4", "fp4", "int8")
 
 
 def _load_tensor(checkpoint: str, name: str, dtype):
@@ -46,13 +49,22 @@ def _load_tensor(checkpoint: str, name: str, dtype):
 def load_madlad(checkpoint: str = BASE_CHECKPOINT, dtype=torch.bfloat16, quant=None):
     """Return (tokenizer, model) with verified-correct embedding/lm_head wiring.
 
-    quant="nf4" loads 4-bit NF4 via bitsandbytes with device_map (do NOT call
+    quant in QUANT_MODES loads via bitsandbytes with device_map (do NOT call
     .to("cuda") on the result); quant=None loads plain bf16 on CPU.
     """
     tokenizer = AutoTokenizer.from_pretrained(checkpoint)
-    if quant == "nf4":
+    if quant in QUANT_MODES:
         from transformers import BitsAndBytesConfig
 
+        if quant == "int8":
+            bnb_config = BitsAndBytesConfig(load_in_8bit=True)
+        else:
+            bnb_config = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_quant_type=quant,  # "nf4" or "fp4"
+                bnb_4bit_compute_dtype=dtype,
+                bnb_4bit_use_double_quant=True,
+            )
         # NOTE: transformers 5.15's lazy weight loading intermittently
         # access-violates on Windows with large sharded checkpoints
         # (crash is in its mmap-slice materialization; plain safetensors
@@ -63,15 +75,10 @@ def load_madlad(checkpoint: str = BASE_CHECKPOINT, dtype=torch.bfloat16, quant=N
             checkpoint,
             dtype=dtype,
             device_map={"": 0},
-            quantization_config=BitsAndBytesConfig(
-                load_in_4bit=True,
-                bnb_4bit_quant_type="nf4",
-                bnb_4bit_compute_dtype=dtype,
-                bnb_4bit_use_double_quant=True,
-            ),
+            quantization_config=bnb_config,
         )
     elif quant is not None:
-        raise ValueError(f"unknown quant: {quant}")
+        raise ValueError(f"unknown quant: {quant} (expected one of {sorted(QUANT_MODES)})")
     else:
         model = AutoModelForSeq2SeqLM.from_pretrained(checkpoint, dtype=dtype)
 

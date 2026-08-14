@@ -3,6 +3,10 @@
 **📄 Paper: [Pretraining Coverage Beats Scale](https://streetsolider.github.io/div-translation/paper/paper.html)**
 ([PDF](paper/pretraining-coverage-beats-scale.pdf)) · **🤗 Adapter: [str33t/madlad400-3b-mt-en-dv-news-v1](https://huggingface.co/str33t/madlad400-3b-mt-en-dv-news-v1)**
 
+**📄 Paper 2: [How Far Can It Shrink?](paper/how-low-can-you-go.pdf)** — the
+same model as a 1.86 GB CPU-only build, at no measurable quality cost
+([results](#quantization-round-2-2026-08-13))
+
 English → Dhivehi (Thaana) sentence translation, fine-tuned locally on an
 RTX 5070 Ti (16GB). Companion project to
 [div-transliteration](https://github.com/streetsolider/div-transliteration),
@@ -77,6 +81,47 @@ intermittently access-violates on Windows with large sharded checkpoints
 (see `scripts/robust_download.py` + `scripts/convert_7b_bf16.py` for the
 workaround chain we used for the 7B row).
 
+## Quantization (round 2, 2026-08-13)
+
+How small can this model get before Dhivehi quality degrades? The adapter is
+merged into the base weights once (`scripts/merge_lora.py`), then quantized
+along two paths. Full 1,500-pair devtest, **greedy** decoding for the GGUF
+rows because llama.cpp has no beam search for encoder-decoder models — so
+they are compared against a greedy bf16 baseline (60.88), not the beam-4
+headline (61.86).
+
+| Build | Size | chrF++ | Δ | RT | CPU tok/s |
+|---|---|---|---|---|---|
+| bf16 merged (beam 4) | 5.88 GB | 61.86 | — | 100% | — |
+| bf16 merged (greedy) | 5.88 GB | 60.88 | — | 100% | — |
+| bitsandbytes int8 (beam 4) | 4.00 GB | 61.76 | −0.10 | 100% | — |
+| bitsandbytes NF4 (beam 4) | 3.06 GB | 61.93 | +0.07 | 100% | — |
+| GGUF Q8_0 | 3.13 GB | 60.88 | 0.00 | 100% | 17.6 |
+| **GGUF Q4_K_M** | **1.86 GB** | **60.91** | **+0.03** | **100%** | **22.7** |
+| GGUF Q3_K_M | 1.47 GB | 60.09 | −0.79 | 99.9% | 24.9 |
+| GGUF Q2_K | 1.18 GB | 57.30 | −3.58 | 100% | 29.1 |
+
+**Q4_K_M is the recommended build**: 3.2× smaller than bf16 at no measurable
+cost, running in under 3 GB of RAM with no GPU and no Python — roughly one
+news sentence per second on eight CPU threads.
+
+Two findings worth knowing if you quantize a similar model:
+
+- **Spend bits on the body, not the vocabulary.** The two 256k×1024 vocab
+  tensors are 17.8% of the parameters, but crushing either one to 2 bits
+  costs <0.4 chrF++. Protecting both in a 2-bit model buys 0.27; spending
+  the same disk on the body (Q2_K → Q3_K_M) buys 2.79.
+- **The keymap round-trip check cannot see quantization damage.** It stays
+  above 99.9% at every level and isn't monotone — the only failing sentence
+  is at Q3_K_M, while the worse Q2_K passes all 1,500. Quantized models
+  degrade into repetition loops of *valid* Thaana. Use chrF++ and a
+  length-ratio check instead.
+
+On a GPU, quantization buys memory rather than speed (163–184 tok/s across
+the whole ladder); on CPU it buys speed (17.6 → 29.1 tok/s). bitsandbytes
+leaves the vocab tensors in bf16, so 4-bit still needs 6.0 GB of VRAM at
+beam 4 against 2.79 GB for the entire Q4_K_M process.
+
 ## Usage
 
 ```powershell
@@ -87,4 +132,23 @@ python eval\evaluate.py             # out-of-box baseline chrF++ on devtest
 python train\finetune.py --smoke    # 50-step pipeline check
 python train\finetune.py            # full LoRA fine-tune (~3 epochs)
 python eval\evaluate.py --adapter train\checkpoints\madlad3b-lora-r1
+```
+
+### Quantization pipeline
+
+```powershell
+python scripts\merge_lora.py                     # -> models/madlad3b-lora-r1-merged
+python third_party\llama.cpp\convert_hf_to_gguf.py models\madlad3b-lora-r1-merged `
+    --outtype f16 --outfile models\gguf\madlad3b-en-dv-f16.gguf
+python scripts\build_gguf_ladder.py              # Q8_0..Q2_K + per-tensor probes
+python scripts\run_gguf_sweep.py --limit 150     # screen every artifact
+python eval\bench_speed.py --gguf all --hf --cpu # size / memory / tokens per sec
+```
+
+Translating with the quantized model needs no Python at all:
+
+```powershell
+third_party\bin\llama-completion.exe -m models\gguf\madlad3b-en-dv-q4_k_m.gguf `
+    -p "<2dv> The government announced a new education policy yesterday." `
+    -n 256 --temp 0 -ngl 0 -no-cnv
 ```

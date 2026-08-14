@@ -1,5 +1,6 @@
 .venv/
 models/
+third_party/
 __pycache__/
 *.pyc
 data/processed/
@@ -13,6 +14,8 @@ eval/*_log.txt
 eval/*_err.txt
 scripts/infer_log.txt
 scripts/infer_err.txt
+scripts/quant_server_log.txt
+eval/quant_report.py
 .cache/
 paper/tools/
 paper/thaana-font/

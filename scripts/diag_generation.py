@@ -1,55 +1,75 @@
-"""Verify the MADLAD weight-wiring fix under transformers 5.x.
+"""Smoke-test generation for MADLAD checkpoints (weight-wiring sanity check).
 
-The checkpoint ships only decoder.embed_tokens.weight (the true shared
+The checkpoints ship only decoder.embed_tokens.weight (the true shared
 embedding) and a distinct lm_head.weight. Transformers 5.x ties
 shared/encoder/lm_head from the wrong tensor. Correct wiring:
   shared = encoder.embed = decoder.embed = ckpt decoder.embed_tokens.weight
   lm_head = ckpt lm_head.weight (untied)
-Expected after fix: '<2pt> I love pizza!' -> 'Eu adoro pizza!'
+Expected: '<2pt> I love pizza!' -> 'Eu adoro pizza!', and Thaana (not
+mojibake or repetition loops) for the <2dv> prompts.
+
+Runs through madlad_loader, so it doubles as the per-artifact smoke test for
+merged and quantized checkpoints:
+
+  python scripts/diag_generation.py
+  python scripts/diag_generation.py --model models/madlad3b-lora-r1-merged
+  python scripts/diag_generation.py --model models/madlad3b-lora-r1-merged --quant nf4
 """
 
-import glob
-import os
+import argparse
 import sys
+from pathlib import Path
 
 sys.stdout.reconfigure(encoding="utf-8")
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import torch
-from safetensors import safe_open
-from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
-CKPT = "google/madlad400-3b-mt"
+from madlad_loader import BASE_CHECKPOINT, load_madlad
 
-tokenizer = AutoTokenizer.from_pretrained(CKPT)
-model = AutoModelForSeq2SeqLM.from_pretrained(CKPT, dtype=torch.bfloat16)
-
-path = glob.glob(
-    os.path.expanduser(
-        "~/.cache/huggingface/hub/models--google--madlad400-3b-mt/snapshots/*/model.safetensors"
-    )
-)[0]
-with safe_open(path, framework="pt") as f:
-    true_embed = f.get_tensor("decoder.embed_tokens.weight").to(torch.bfloat16)
-    true_lm_head = f.get_tensor("lm_head.weight").to(torch.bfloat16)
-
-model.config.tie_word_embeddings = False
-model.shared = torch.nn.Embedding.from_pretrained(true_embed, freeze=False)
-model.encoder.embed_tokens = model.shared
-model.decoder.embed_tokens = model.shared
-model.lm_head = torch.nn.Linear(
-    true_lm_head.shape[1], true_lm_head.shape[0], bias=False, dtype=torch.bfloat16
-)
-model.lm_head.weight.data = true_lm_head
-model = model.to("cuda")
-model.eval()
-
-for prompt in (
+PROMPTS = (
     "<2pt> I love pizza!",
     "<2dv> I love pizza!",
     "<2dv> The government announced a new education policy yesterday.",
     "<2en> ދިވެހިރާއްޖޭގެ ސަރުކާރުން އައު ތައުލީމީ ސިޔާސަތެއް އިއުލާނުކޮށްފި",
-):
-    inputs = tokenizer(prompt, return_tensors="pt").to("cuda")
-    with torch.no_grad():
-        out = model.generate(**inputs, max_new_tokens=48, num_beams=4)
-    print(f"{prompt!r}\n  -> {tokenizer.decode(out[0], skip_special_tokens=True)!r}")
+)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--model", default=BASE_CHECKPOINT)
+    parser.add_argument("--adapter", default=None, help="Path to a PEFT LoRA adapter")
+    parser.add_argument("--quant", default=None, choices=["nf4", "fp4", "int8"])
+    parser.add_argument("--num-beams", type=int, default=4)
+    parser.add_argument("--max-new-tokens", type=int, default=48)
+    args = parser.parse_args()
+
+    tokenizer, model = load_madlad(args.model, quant=args.quant)
+    if not args.quant:
+        model = model.to("cuda")
+    if args.adapter:
+        from peft import PeftModel
+
+        model = PeftModel.from_pretrained(model, args.adapter)
+    model.eval()
+
+    tied = torch.equal(
+        model.lm_head.weight.data.cpu(), model.get_input_embeddings().weight.data.cpu()
+    )
+    print(f"model={args.model} quant={args.quant} lm_head_tied={tied}")
+    if tied:
+        print("WARNING: lm_head is tied to the embedding - generation will be garbage")
+
+    for prompt in PROMPTS:
+        inputs = tokenizer(prompt, return_tensors="pt").to("cuda")
+        with torch.no_grad():
+            out = model.generate(
+                **inputs,
+                max_new_tokens=args.max_new_tokens,
+                num_beams=args.num_beams,
+            )
+        print(f"{prompt!r}\n  -> {tokenizer.decode(out[0], skip_special_tokens=True)!r}")
+
+
+if __name__ == "__main__":
+    main()

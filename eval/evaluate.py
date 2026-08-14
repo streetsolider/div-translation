@@ -24,7 +24,7 @@ import torch
 from datasets import load_from_disk
 
 from keymap import keymap_to_thaana, thaana_to_keymap
-from madlad_loader import BASE_CHECKPOINT, load_madlad
+from madlad_loader import BASE_CHECKPOINT, QUANT_MODES, load_madlad
 DATA_DIR = Path(__file__).resolve().parents[1] / "data" / "processed" / "round1"
 OUT_DIR = Path(__file__).resolve().parent / "outputs"
 
@@ -39,8 +39,8 @@ def main():
     parser.add_argument("--num-beams", type=int, default=4)
     parser.add_argument("--tag", default=None, help="Label for the output file")
     parser.add_argument(
-        "--quant", default=None, choices=["nf4"],
-        help="4-bit NF4 quantization (for 7B/10B on 16GB)",
+        "--quant", default=None, choices=list(QUANT_MODES),
+        help="bitsandbytes weight quantization (nf4/fp4 4-bit, int8)",
     )
     parser.add_argument(
         "--checkpoint", default=None,
